@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import Image from "next/image";
-import Logo from "@/public/logo-2.png";
+import Logo from "@/public/logo.jpeg";
 
 
 export default function AuthLayout({children}: {children: ReactNode}) {
@@ -18,7 +18,7 @@ export default function AuthLayout({children}: {children: ReactNode}) {
 
         <div className="flex w-full max-w-sm flex-col gap-6">
           <Link href="/" className="flex items-center gap-2 self-center font-medium">
-          <Image src={Logo} alt="Logo" width={32} height={32}/>
+          <Image src={Logo} alt="Logo" width={60} height={60} className="rounded-full"/>
           ALMS
           </Link>
           {children}
