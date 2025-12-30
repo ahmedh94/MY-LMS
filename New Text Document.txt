@@ -1,1 +1,13 @@
 npx shadcn@latest add alert-dialog avatar badge breadcrumb button card chart checkbox collapsible dialog drawer dropdown-menu form input-otp input label progress select separator sheet sidebar skeleton sonner table tabs textarea toggle-group toggle tooltip
+
+DATABASE_URL="postgresql://neondb_owner:npg_fhcL9At6OTBo@ep-empty-sunset-a8vwlnie-pooler.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require"
+
+BETTER_AUTH_SECRET=6lJwyFSQNwqJpxb6KfBaAlhQM2iy1IAt
+
+BETTER_AUTH_URL=http://localhost:3000
+
+AUTH_GITHUB_CLIENT_SECRET=666d3eb2b19d178fd2a678c425195bd2b7f2079b
+
+AUTH_GITHUB_CLIENT_ID=Ov23liZlFgGz1QwT6lXx
+
+RESEND_API_KEY=re_7vPShpbd_AXjohDLKjZJp24f7M1B7UnrR
