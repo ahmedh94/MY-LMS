@@ -9,20 +9,57 @@ import {
 } from "@/components/ui/dropdown-menu"
 import AvatarDemo from "./Avatar"
 import Link from "next/link"
-import { BookOpen, Home, LayoutDashboard } from "lucide-react"
+import { BookOpen, Home, LayoutDashboard, LogOutIcon } from "lucide-react"
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
 
-export default function UserDropdown() {
+} from "@/components/ui/avatar"
+
+interface iUserProps{
+    name: string;
+    email: string;
+    image: string;
+}
+
+export default function UserDropdown({name, email, image}: iUserProps) {
+    const router = useRouter();
+
+      async function signOut() {
+        await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/"); // redirect to login page
+          toast.success("Successfully signed out!"); 
+        },
+        onError: () => {
+          toast.error("Failed to sign out!"); 
+        },
+      },
+    });
+      }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Link href="/profile" className="rounded-full border-green-500 border-3 outline-none">
-          <AvatarDemo/>
+          {/*<AvatarDemo/>*/}
+          <div className="flex flex-row flex-wrap items-center gap-12">
+      <Avatar>
+        <AvatarImage src={image} alt={name} />
+        <AvatarFallback>{name[0]}</AvatarFallback>
+      </Avatar>
+    </div>
         </Link>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-50" align="start">
         <DropdownMenuLabel>
-            <h3 className="font-medium">Ahmed Hasan</h3>
-            <p className="text-xs text-muted-foreground">ahmed.h_199438@yahoo.com</p>
+            <h3 className="font-medium">{name}</h3>
+            <p className="text-xs text-muted-foreground">{email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
@@ -46,8 +83,9 @@ export default function UserDropdown() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
+        <DropdownMenuItem onClick={signOut}>
+            <LogOutIcon size={16} className="opacity-60" aria-hidden="true"/>
+            <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

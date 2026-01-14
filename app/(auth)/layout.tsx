@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
-import logo from '@/public/LOGO.jpg';
+import logo from '@/public/a3t.jpg';
 
 
 export default function AuthLayout({children}: {children: ReactNode}) {

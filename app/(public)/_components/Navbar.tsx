@@ -40,7 +40,7 @@ export default function Navbar() {
                         <ThemeToggle/>
 
                         {isPending ? null : session ? (
-                            <UserDropdown/>
+                            <UserDropdown email={session.user?.email} name={session.user?.name} image={session.user?.image || ""}/>
                         ): (
                             <>
                             <Link href="/login" className={buttonVariants({ variant: "secondary" })}>Login</Link>
