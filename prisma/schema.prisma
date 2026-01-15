@@ -14,7 +14,6 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model User {
   id            String    @id
   name          String
@@ -76,4 +75,34 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Course {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  fileKey     String
+  price       Int
+  duration    Int
+  level       CourseLevel @default(BEGINNER)
+
+  category         String
+  smallDescription String
+  slug             String @unique
+  status           String @default("draft")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
