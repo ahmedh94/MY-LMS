@@ -13,6 +13,7 @@ import { z } from "zod";
 import slugify from "slugify";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Editor } from "@/components/rich-text-editor/Editor";
 
 
 export default function CreateCoursePage() {
@@ -116,7 +117,8 @@ export default function CreateCoursePage() {
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
-                                            <Textarea placeholder="Description" className="min-h-[100px]" {...field} />
+                                          {/*  <Textarea placeholder="Description" className="min-h-[100px]" {...field} />*/}
+                                          <Editor />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
