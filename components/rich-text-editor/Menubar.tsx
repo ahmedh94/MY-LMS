@@ -30,7 +30,7 @@ export function Menubar({ editor }: MenubarProps) {
 
     if (!editor) return null;
     return (
-        <div className="border border-input rounded-t-lg p-2 bg-card shadow-sm flex flex-wrap gap-1 items-center">
+        <div className="border border-input border-t-0 border-x-0 rounded-t-lg p-2 bg-card shadow-sm flex flex-wrap gap-1 items-center">
             <TooltipProvider>
                 <div className="flex flex-wrap gap-1">
                     <Tooltip>

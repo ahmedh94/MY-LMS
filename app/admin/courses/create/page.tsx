@@ -14,6 +14,7 @@ import slugify from "slugify";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Editor } from "@/components/rich-text-editor/Editor";
+import { Upload } from "@/components/file-upload/Upload";
 
 
 export default function CreateCoursePage() {
@@ -118,7 +119,7 @@ export default function CreateCoursePage() {
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
                                           {/*  <Textarea placeholder="Description" className="min-h-[100px]" {...field} />*/}
-                                          <Editor />
+                                          <Editor field={field}/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -131,7 +132,8 @@ export default function CreateCoursePage() {
                                     <FormItem>
                                         <FormLabel>Thumbnail image</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="thumbnail url" {...field} />
+                                          {/* <Input placeholder="thumbnail url" {...field} /> */}
+                                          <Upload />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
