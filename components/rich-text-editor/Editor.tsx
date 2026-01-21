@@ -29,7 +29,7 @@ export function Editor({ field }: { field: any }) {
             field.onChange(JSON.stringify(editor.getJSON()));
         },
 
-        content: field.value ? JSON.parse(field.value) : "<p>you don't have any content yet.</p>",
+        content: field.value ? JSON.parse(field.value) : "",
     });
 
     return (
