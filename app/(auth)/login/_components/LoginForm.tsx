@@ -10,46 +10,49 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
+
 export function LoginForm() {
     const router = useRouter();
-        const [githubPending, setGithubTransition] = useTransition();
-        const [emailPending, startEmailTransition] = useTransition();
-        const [email, setEmail] = useState("");
+    const [githubPending, setGithubTransition] = useTransition();
+    const [emailPending, startEmailTransition] = useTransition();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     async function signInWithGithub() {
         setGithubTransition(async () => {
             await authClient.signIn.social({
-            provider: "github",
-            callbackURL: "/",
-            fetchOptions: {
-                onSuccess: () => {
-                    toast.success("Successfully signed in with Github!");
-            },
-                onError: () => {
-                    toast.error("Internal Server Error. Please try again.");
+                provider: "github",
+                callbackURL: "/",
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success("Successfully signed in with Github!");
+                    },
+                    onError: () => {
+                        toast.error("Internal Server Error. Please try again.");
+                    },
                 },
-            },
-        })
+            })
         });
     }
 
     function signInWithEmail() {
         startEmailTransition(async () => {
             await authClient.emailOtp.sendVerificationOtp({
-            email: email,
-            type: 'sign-in',
-            fetchOptions: {
-                onSuccess: () => {
-                    toast.success("Verification OTP sent to your email!")
-                    router.push(`/verify-request?email=${email}`);
+                email: email,
+                type: 'sign-in',
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success("Verification OTP sent to your email!")
+                        router.push(`/verify-request?email=${email}`);
                     },
-                onError: () => {
-                    toast.error("Internal Server Error. Please try again.");
+                    onError: () => {
+                        toast.error("Internal Server Error. Please try again.");
+                    }
                 }
-            }
-        })
+            })
+        }
+        )
     }
-    )}
 
     return (
         <Card>
@@ -61,40 +64,54 @@ export function LoginForm() {
                 <Button disabled={githubPending} onClick={signInWithGithub} className="w-full" variant="outline">
                     {githubPending ? (
                         <>
-                        <Loader className="size-4 animate-spin"/>
-                        <span className="ml-2">Loading...</span>
+                            <Loader className="size-4 animate-spin" />
+                            <span className="ml-2">Loading...</span>
                         </>
-                    ):(
+                    ) : (
                         <>
-                        <GithubIcon className="size-4" />
-                        Sign in with Github
+                            <GithubIcon className="size-4" />
+                            Sign in with Github
                         </>
                     )}
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-10 bg-card px-2 text-muted-foreground">Or Continue With</span>
+                    <span className="relative z-10 bg-card px-2 text-muted-foreground">Or Continue With</span>
                 </div>
                 <div className="grid gap-3">
                     <div className="grid gap-2">
                         <Label htmlFor="email">Email</Label>
                         <Input value={email} onChange={(e) => setEmail(e.target.value)}
                             type="email"
-                            placeholder="m@example.com" 
+                            placeholder="m@example.com"
                             required
-                            />
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="password">Password</Label>
+                        <Input value={password} onChange={(e) => setPassword(e.target.value)}
+                            type="password"
+                            placeholder="********"
+                            required
+                        />
                     </div>
                     <Button onClick={signInWithEmail} disabled={emailPending}>
                         {emailPending ? (
                             <>
-                            <Loader2 className="size-4 animate-spin"/>
-                            <span className="ml-2">Loading...</span>
+                                <Loader2 className="size-4 animate-spin" />
+                                <span className="ml-2">Loading...</span>
                             </>
-                        ): (
+                        ) : (
                             <>
-                            <Send className="size-4"/>
-                            <span>Continue with Email</span>
+                                <Send className="size-4" />
+                                <span>Continue with Email</span>
                             </>
                         )}</Button>
+
+                    <Button>
+                        <a href="/sign-up">
+                            <span>Sign Up</span>
+                        </a>
+                    </Button>
                 </div>
             </CardContent>
         </Card>

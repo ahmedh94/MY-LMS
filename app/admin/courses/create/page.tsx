@@ -14,89 +14,89 @@ import slugify from "slugify";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Editor } from "@/components/rich-text-editor/Editor";
-import { Upload } from "@/components/file-upload/Upload";
+import { Upload } from "@/components/file-upload/upload";
 
 
 export default function CreateCoursePage() {
 
-     // 1. Define your form.
-  const form = useForm<CourseSchema>({
-    resolver: zodResolver(courseSchema) as any,
-    defaultValues: {
-        title: "",
-        description: "",
-        fileKey: "",
-        price: 10,
-        duration: 1,
-        level: "BEGINNER",
-        category: "Development",
-        smallDescription: "",
-        slug: "",
-        status: "DRAFT",
-    },
-  })
+    // 1. Define your form.
+    const form = useForm<CourseSchema>({
+        resolver: zodResolver(courseSchema) as any,
+        defaultValues: {
+            title: "",
+            description: "",
+            fileKey: "",
+            price: 10,
+            duration: 1,
+            level: "BEGINNER",
+            category: "Development",
+            smallDescription: "",
+            slug: "",
+            status: "DRAFT",
+        },
+    })
 
     // 2. Define a submit handler.
-  function onSubmit(values: CourseSchema) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
-  }
-  
+    function onSubmit(values: CourseSchema) {
+        // Do something with the form values.
+        // ✅ This will be type-safe and validated.
+        console.log(values)
+    }
+
     return (
         <>
-        <div className="flex items-center gap-4">
-            <Link href="/admin/courses" className={buttonVariants({ variant: "outline", size: "icon", })}>
-                <ArrowLeftIcon className="size-4" />
-            </Link>
-            <h1 className="text-2xl font-semibold">Create Course</h1>
-        </div>
-        <Card className="m-auto w-auto">
-            <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
-                <CardDescription>
-                    Fill in the basic information for the course.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField
-                                control={form.control}
-                                name="title"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Title</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Title" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+            <div className="flex items-center gap-4">
+                <Link href="/admin/courses" className={buttonVariants({ variant: "outline", size: "icon", })}>
+                    <ArrowLeftIcon className="size-4" />
+                </Link>
+                <h1 className="text-2xl font-semibold">Create Course</h1>
+            </div>
+            <Card className="m-auto w-auto">
+                <CardHeader>
+                    <CardTitle>Basic Information</CardTitle>
+                    <CardDescription>
+                        Fill in the basic information for the course.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <FormField
+                                    control={form.control}
+                                    name="title"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Title</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Title" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
                             <div className="flex gap-4 items-end">
                                 <FormField
-                                control={form.control}
-                                name="slug"
-                                render={({ field }) => (
-                                    <FormItem className="w-full">
-                                        <FormLabel>Slug</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Slug" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <Button type="button" className="w-fit" onClick={() => {
-                                const titleValue = form.getValues("title");
-                                const slug = slugify(titleValue);
-                                form.setValue("slug", slug, {shouldValidate: true} );
-                            }}>
-                                Generate Slug <SparkleIcon className="ml-2 size-4" />
-                            </Button>
+                                    control={form.control}
+                                    name="slug"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full">
+                                            <FormLabel>Slug</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Slug" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="button" className="w-fit" onClick={() => {
+                                    const titleValue = form.getValues("title");
+                                    const slug = slugify(titleValue);
+                                    form.setValue("slug", slug, { shouldValidate: true });
+                                }}>
+                                    Generate Slug <SparkleIcon className="ml-2 size-4" />
+                                </Button>
                             </div>
                             <FormField
                                 control={form.control}
@@ -118,22 +118,20 @@ export default function CreateCoursePage() {
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
-                                          {/*  <Textarea placeholder="Description" className="min-h-[100px]" {...field} />*/}
-                                          <Editor field={field}/>
+                                            <Editor field={field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                             <FormField
+                            <FormField
                                 control={form.control}
                                 name="fileKey"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Thumbnail image</FormLabel>
                                         <FormControl>
-                                          {/* <Input placeholder="thumbnail url" {...field} /> */}
-                                          <Upload />
+                                            <Upload onChange={field.onChange} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -197,73 +195,73 @@ export default function CreateCoursePage() {
                                     )}
                                 />
 
-                                 <FormField
-                                control={form.control}
-                                name="duration"
-                                render={({ field }) => (
-                                    <FormItem className="w-full">
-                                        <FormLabel>Duration ( Hours)</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Duration" type="number" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-                            <FormField
-                                control={form.control}
-                                name="price"
-                                render={({ field }) => (
-                                    <FormItem className="w-full">
-                                        <FormLabel>Price ($)</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Price" type="number" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                                
-                            </div>
-
-                            <FormField
+                                <FormField
                                     control={form.control}
-                                    name="status"
+                                    name="duration"
                                     render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Status</FormLabel>
+                                        <FormItem className="w-full">
+                                            <FormLabel>Duration ( Hours)</FormLabel>
                                             <FormControl>
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={field.value}
-                                                >
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Select Status" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {courseStatus.map((status) => (
-                                                            <SelectItem key={status} value={status}>
-                                                                {status}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
+                                                <Input placeholder="Duration" type="number" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
 
-                                <Button type="submit">
-                                    Create Course <PlusIcon className="ml-2 h-4 w-4" />
-                                </Button>
-                            
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
+
+                                <FormField
+                                    control={form.control}
+                                    name="price"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full">
+                                            <FormLabel>Price ($)</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Price" type="number" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                            </div>
+
+                            <FormField
+                                control={form.control}
+                                name="status"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Status</FormLabel>
+                                        <FormControl>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                            >
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Status" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {courseStatus.map((status) => (
+                                                        <SelectItem key={status} value={status}>
+                                                            {status}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <Button type="submit">
+                                Create Course <PlusIcon className="ml-2 h-4 w-4" />
+                            </Button>
+
+                        </form>
+                    </Form>
+                </CardContent>
+            </Card>
         </>
     )
 }
