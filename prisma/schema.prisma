@@ -6,11 +6,22 @@
 
 generator client {
   output   = "../lib/generated/prisma"
-  provider = "prisma-client-ts"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model Upload {
+  id        String   @id @default(uuid())
+  name      String
+  url       String
+  fileType  String
+  fileSize  Int
+  fileKey   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {
@@ -81,7 +92,8 @@ model Course {
   id          String      @id @default(uuid())
   title       String
   description String
-  fileKey     String
+  fileKey     String?
+  imageUrl    String?
   price       Int
   duration    Int
   level       CourseLevel @default(BEGINNER)

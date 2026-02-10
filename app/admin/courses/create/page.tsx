@@ -14,7 +14,7 @@ import slugify from "slugify";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Editor } from "@/components/rich-text-editor/Editor";
-import { Upload } from "@/components/file-upload/upload";
+import { Upload } from "@/components/upload/upload";
 
 
 export default function CreateCoursePage() {
@@ -25,7 +25,7 @@ export default function CreateCoursePage() {
         defaultValues: {
             title: "",
             description: "",
-            fileKey: "",
+            imageUrl: "",
             price: 10,
             duration: 1,
             level: "BEGINNER",
@@ -126,12 +126,12 @@ export default function CreateCoursePage() {
                             />
                             <FormField
                                 control={form.control}
-                                name="fileKey"
+                                name="imageUrl"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Thumbnail image</FormLabel>
                                         <FormControl>
-                                            <Upload onChange={field.onChange} />
+                                            <Upload onChange={field.onChange} id={""} value={field.value} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

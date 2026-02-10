@@ -5,23 +5,27 @@ import Image from "next/image";
 import { useUploadThing } from "@/lib/uploadthing"; // تأكد من إنشاء هذا الملف كما فعلنا سابقاً
 import { toast } from "sonner";
 import { X, UploadCloud, Loader2 } from "lucide-react";
+import { deleteImageAction } from "@/lib/course";
 
 interface UploadProps {
   onChange: (url: string | null) => void;
   value?: string;
 }
 
-export function Upload({ onChange, value }: UploadProps) {
+export function Upload({ onChange, value, id }: UploadProps & { id: string }) {
   const [imgUrl, setImgUrl] = useState(value || "");
   const [progress, setProgress] = useState(0);
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: (res) => {
-      const url = res?.[0].url;
-      setImgUrl(url);
-      onChange(url);
-      setProgress(0);
-      toast.success("UPLOADED");
+      if (res && res.length > 0) {
+        // استخدم ufsUrl بدلاً من url لتفادي التحذيرات
+        const url = res[0].ufsUrl || res[0].url;
+        setImgUrl(url);
+        onChange(url);
+        setProgress(0); // إعادة تصغير شريط التحميل
+        toast.success("UPLOADED");
+      }
     },
     onUploadError: (error) => {
       toast.error(`ERROR: ${error.message}`);
@@ -32,21 +36,30 @@ export function Upload({ onChange, value }: UploadProps) {
     },
   });
 
-  const handleRemove = () => {
-    setImgUrl("");
-    onChange(null);
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this image?")) return;
+    const res = await fetch(`/api/${id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setImgUrl("");
+      onChange("");
+      toast.success("DELETED");
+    } else {
+      toast.error("Failed to delete image");
+    }
   };
 
   // 1. عرض الصورة بعد الرفع
   if (imgUrl) {
     return (
-      <div className="relative w-full mx-auto h-64 border-2 p-10 border-dashed border-gray-200 rounded-2xl overflow-hidden hover:border-[#22c55e] group">
+      <div className="relative w-full mx-auto h-64 border-2 pl-20 pt-3 border-dashed border-gray-200 rounded-2xl overflow-hidden hover:border-[#22c55e] group">
 
-        <Image src={imgUrl} alt="Preview" className="object-cover rounded-2xl relative" width={200} height={200} />
+        <Image src={imgUrl} alt="Preview" className="object-cover rounded-2xl relative" width={400} height={300} />
 
         <button
-          onClick={handleRemove}
-          className="absolute top-11 left-52 z-50 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition shadow-lg"
+          onClick={handleDelete}
+          className="absolute top-5 left-65 z-50 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition shadow-lg"
         >
           <X size={20} />
         </button>
@@ -86,7 +99,7 @@ export function Upload({ onChange, value }: UploadProps) {
         </div>
       ) : (
         <>
-          <div className="bg-blue-100 p-4 rounded-full mb-4">
+          <div className="bg-gray-200 p-4 rounded-full mb-4">
             <UploadCloud className="h-8 w-8 text-[#22c55ee6]" />
           </div>
           <p className="text-sm font-semibold text-gray-500">Choose Image</p>
