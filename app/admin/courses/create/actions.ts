@@ -8,10 +8,16 @@ import { headers } from "next/headers";
 
 export async function CreateCourse(data: CourseSchema): Promise<ApiResponse> {
     try {
-
-        const sassion = await auth.api.getSession({
+        const session = await auth.api.getSession({
             headers: await headers(),
-        })
+        });
+
+        if (!session || !session.user) {
+            return {
+                status: "error",
+                message: "Unauthorized",
+            };
+        }
 
         const validation = courseSchema.safeParse(data);
 
@@ -25,7 +31,7 @@ export async function CreateCourse(data: CourseSchema): Promise<ApiResponse> {
         await prisma.course.create({
             data: {
                 ...validation.data,
-                userId: sassion?.user?.id as string,
+                userId: session.user.id as string,
             },
         });
 
@@ -34,7 +40,8 @@ export async function CreateCourse(data: CourseSchema): Promise<ApiResponse> {
             message: 'Course Created Successfully',
         }
 
-    } catch (error) {
+    } catch (error: any) {
+        console.error("Create Course Error:", JSON.stringify(error, null, 2));
         return {
             status: "error",
             message: "Failed to create course",
