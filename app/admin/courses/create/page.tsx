@@ -2,7 +2,7 @@
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeftIcon, PlusIcon, SparkleIcon } from "lucide-react";
+import { ArrowLeftIcon, Loader2, PlusIcon, SparkleIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -15,9 +15,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Editor } from "@/components/rich-text-editor/Editor";
 import { Upload } from "@/components/upload/upload";
-
+import { useTransition } from "react";
+import { CreateCourse } from "@/app/admin/courses/create/actions";
+import { tryCatch } from "@/hooks/try-catch";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CreateCoursePage() {
+
+    const [isPending, startTransition] = useTransition();
+    const router = useRouter();
 
     // 1. Define your form.
     const form = useForm<CourseSchema>({
@@ -25,7 +32,7 @@ export default function CreateCoursePage() {
         defaultValues: {
             title: "",
             description: "",
-            imageUrl: "",
+            fileKey: "",
             price: 10,
             duration: 1,
             level: "BEGINNER",
@@ -38,9 +45,22 @@ export default function CreateCoursePage() {
 
     // 2. Define a submit handler.
     function onSubmit(values: CourseSchema) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+        startTransition(async () => {
+            const { data: result, error } = await tryCatch(CreateCourse(values));
+
+            if (error) {
+                toast.error("An unexpected error occurred. Please try again later.");
+                return;
+            }
+
+            if (result.status === "success") {
+                toast.success(result.message);
+                form.reset();
+                router.push("/admin/courses");
+            } else if (result.status === "error") {
+                toast.error(result.message);
+            }
+        });
     }
 
     return (
@@ -126,12 +146,12 @@ export default function CreateCoursePage() {
                             />
                             <FormField
                                 control={form.control}
-                                name="imageUrl"
+                                name="fileKey"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Thumbnail image</FormLabel>
                                         <FormControl>
-                                            <Upload onChange={field.onChange} id={""} value={field.value} />
+                                            <Upload onChange={field.onChange} id={""} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -254,8 +274,17 @@ export default function CreateCoursePage() {
                                 )}
                             />
 
-                            <Button type="submit">
-                                Create Course <PlusIcon className="ml-2 h-4 w-4" />
+                            <Button type="submit" disabled={isPending}>
+                                {isPending ? (
+                                    <>
+                                        Creating....
+                                        <Loader2 className="animate-spin ml-2 h-4 w-4" />
+                                    </>
+                                ) : (
+                                    <>
+                                        Create Course <PlusIcon className="ml-2 h-4 w-4" />
+                                    </>
+                                )}
                             </Button>
 
                         </form>

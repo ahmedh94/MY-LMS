@@ -92,8 +92,7 @@ model Course {
   id          String      @id @default(uuid())
   title       String
   description String
-  fileKey     String?
-  imageUrl    String?
+  fileKey     String
   price       Int
   duration    Int
   level       CourseLevel @default(BEGINNER)

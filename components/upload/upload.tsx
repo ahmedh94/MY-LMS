@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { X, UploadCloud, Loader2 } from "lucide-react";
 import { deleteImageAction } from "@/lib/course";
 
+
 interface UploadProps {
   onChange: (url: string | null) => void;
   value?: string;
@@ -18,14 +19,11 @@ export function Upload({ onChange, value, id }: UploadProps & { id: string }) {
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: (res) => {
-      if (res && res.length > 0) {
-        // استخدم ufsUrl بدلاً من url لتفادي التحذيرات
-        const url = res[0].ufsUrl || res[0].url;
-        setImgUrl(url);
-        onChange(url);
-        setProgress(0); // إعادة تصغير شريط التحميل
-        toast.success("UPLOADED");
-      }
+      const url = res?.[0].ufsUrl;
+      setImgUrl(url);
+      onChange(url);
+      setProgress(0);
+      toast.success("UPLOADED");
     },
     onUploadError: (error) => {
       toast.error(`ERROR: ${error.message}`);
@@ -36,17 +34,37 @@ export function Upload({ onChange, value, id }: UploadProps & { id: string }) {
     },
   });
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this image?")) return;
-    const res = await fetch(`/api/${id}`, {
-      method: "DELETE",
-    });
-    if (res.ok) {
+  /* const handleRemove = async () => {
+     try {
+       setImgUrl("");
+       onChange(null);
+ 
+       if (id) {
+         const res = await deleteImageAction(id);
+         if (res.error) {
+           toast.error(res.error);
+           setImgUrl(value || "");
+           return;
+         }
+       }
+       toast.success("REMOVED");
+     } catch (error) {
+       toast.error("ERROR: " + error);
+     }
+   };
+   */
+  const handleRemove = async () => {
+    try {
+      const currentUrl = imgUrl; // نحفظ الرابط قبل مسحه من الواجهة
       setImgUrl("");
-      onChange("");
-      toast.success("DELETED");
-    } else {
-      toast.error("Failed to delete image");
+      onChange(null);
+
+      // نرسل الرابط والـ ID معاً لضمان الحذف
+      const res = await deleteImageAction(id, currentUrl);
+
+      if (res.success) toast.success("تم الحذف بنجاح");
+    } catch (e) {
+      toast.error("حدث خطأ");
     }
   };
 
@@ -55,10 +73,16 @@ export function Upload({ onChange, value, id }: UploadProps & { id: string }) {
     return (
       <div className="relative w-full mx-auto h-64 border-2 pl-20 pt-3 border-dashed border-gray-200 rounded-2xl overflow-hidden hover:border-[#22c55e] group">
 
-        <Image src={imgUrl} alt="Preview" className="object-cover rounded-2xl relative" width={400} height={300} />
+        <Image
+          src={imgUrl}
+          alt="Preview"
+          className="object-cover rounded-2xl"
+          fill // استخدم fill بدلاً من تحديد أرقام ثابتة
+          sizes="(max-width: 768px) 100vw, 400px" // لتحسين الأداء
+        />
 
         <button
-          onClick={handleDelete}
+          onClick={handleRemove}
           className="absolute top-5 left-65 z-50 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition shadow-lg"
         >
           <X size={20} />
