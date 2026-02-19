@@ -3,14 +3,48 @@
 import { prisma } from "@/lib/db";
 import { courseSchema, CourseSchema } from "@/lib/zodSchemas"
 import { ApiResponse } from "@/lib/types";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { requireAdmin } from "@/app/data/admin/require-admin";
+import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
+import { request } from "@arcjet/next";
+
+
+const aj = arcjet.withRule(
+    detectBot({
+        mode: 'LIVE',
+        allow: [],
+    })
+).withRule(
+    fixedWindow({
+        mode: 'LIVE',
+        window: '1m',
+        max: 2,
+    })
+);
 
 export async function CreateCourse(data: CourseSchema): Promise<ApiResponse> {
+
+
+    const session = await requireAdmin();
+
     try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
+        const req = await request();
+        const decision = await aj.protect(req, {
+            fingerprint: session.user.id,
         });
+
+        if (decision.isDenied()) {
+            if (decision.reason.isRateLimit()) {
+                return {
+                    status: 'error',
+                    message: "You have been blocked due to rate limiting"
+                };
+            } else {
+                return {
+                    status: "error",
+                    message: "You are a BOT! if this is a mistake please contact support",
+                }
+            }
+        }
 
         if (!session || !session.user) {
             return {

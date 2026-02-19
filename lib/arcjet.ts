@@ -1,25 +1,25 @@
 import "server-only";
 
-import {detectBot, fixedWindow, protectSignup, sensitiveInfo, shield, slidingWindow} from '@arcjet/next'
+import { detectBot, fixedWindow, protectSignup, sensitiveInfo, shield, slidingWindow } from '@arcjet/next'
 import arcjet from '@arcjet/next'
 import { env } from './env';
 
 export {
- detectBot,
- fixedWindow,
- protectSignup,
- sensitiveInfo,
- shield,
- slidingWindow,   
+  detectBot,
+  fixedWindow,
+  protectSignup,
+  sensitiveInfo,
+  shield,
+  slidingWindow,
 }
 
 export default arcjet({
-    key: env.ARCJET_KEY,
+  key: env.ARCJET_KEY,
 
-    characteristics: ["fingerprint"],
-    rules: [
-      shield({
-        mode: "LIVE",
-      })  
-    ] 
+  characteristics: ["fingerprint", "ip.src"],
+  rules: [
+    shield({
+      mode: "LIVE",
+    })
+  ]
 });
