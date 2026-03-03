@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const session = await requireAdmin();
 
     const decision = await aj.protect(request, {
-        fingerprint: session.user.id as string,
+        fingerprint: session.user.id,
     });
 
     if (decision.isDenied()) {
