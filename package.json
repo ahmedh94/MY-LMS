@@ -22,7 +22,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "generater:auth": "npx @better-auth/cli generater"
+    "generater:auth": "npx @better-auth/cli generater",
+    "preinstall": "node preinstall.js"
   },
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.15",

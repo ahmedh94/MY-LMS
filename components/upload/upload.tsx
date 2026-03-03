@@ -62,9 +62,9 @@ export function Upload({ onChange, value, id }: UploadProps & { id: string }) {
       // نرسل الرابط والـ ID معاً لضمان الحذف
       const res = await deleteImageAction(id, currentUrl);
 
-      if (res.success) toast.success("تم الحذف بنجاح");
+      if (res.success) toast.success("DELETED");
     } catch (e) {
-      toast.error("حدث خطأ");
+      toast.error("ERROR");
     }
   };
 

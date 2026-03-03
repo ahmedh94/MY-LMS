@@ -18,15 +18,13 @@ const aj = arcjet.withRule(
 );
 
 export const ourFileRouter = {
-  // هنا نسمي الـ endpoint "imageUploader"
   imageUploader: f({ image: { maxFileSize: "4MB" } })
     .middleware(async ({ req }) => {
-      // 1. التحقق من الجلسة
       const session = await requireAdmin();
 
-      // 2. حماية Arcjet
+
       const decision = await aj.protect(req, {
-        fingerprint: session.user.id as string,
+        fingerprint: session.user.id,
       });
 
       if (decision.isDenied()) {
