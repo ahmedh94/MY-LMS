@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/app/data/admin/require-admin";
 import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { UploadThingError } from "uploadthing/server";
 
 const f = createUploadthing();
 
@@ -22,16 +23,21 @@ export const ourFileRouter = {
     .middleware(async ({ req }) => {
       const session = await requireAdmin();
 
-
+      if (!session || session.user.role !== "admin") {
+        throw new UploadThingError("Unauthorized");
+      }
       const decision = await aj.protect(req, {
         fingerprint: session.user.id,
       });
 
       if (decision.isDenied()) {
+        throw new UploadThingError("Too many requests or bot detected");
+        /*
         return {
           status: 'error',
           message: "Too many requests or bot detected"
         }
+        */
       }
 
       return { userId: session.user.id };
