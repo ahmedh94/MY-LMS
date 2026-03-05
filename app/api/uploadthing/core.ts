@@ -23,9 +23,13 @@ export const ourFileRouter = {
     .middleware(async ({ req }) => {
       const session = await requireAdmin();
 
+
       if (!session || session.user.role !== "admin") {
         throw new UploadThingError("Unauthorized");
       }
+
+
+
       const decision = await aj.protect(req, {
         fingerprint: session.user.id,
       });
